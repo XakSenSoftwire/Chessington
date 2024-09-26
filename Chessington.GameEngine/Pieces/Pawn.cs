@@ -36,7 +36,7 @@ namespace Chessington.GameEngine.Pieces
                     rowDisplacement.Add(-2);
                 }
             }
-
+            
             Square currSquare = board.FindPiece(this);
             IEnumerable<Square> possibleSquares = new List<Square>();
     

@@ -10,44 +10,37 @@ namespace Chessington.GameEngine.Pieces
 
         public override IEnumerable<Square> GetAvailableMoves(Board board)
         {
-            List<int> rowDisplacement = new List<int> {};
-            List<int> colDisplacement = new List<int> {};
-            
-        
+            // Directions: top-right, bottom-right, bottom-left, top-left
+            int[][] directions = new int[][]
+            {
+                new int[] { 1, 0 }, // right
+                new int[] { -1, 0 }, // left
+                new int[] { 0, 1 }, // up
+                new int[] { 0, -1 } // down
+            };
+
+            IEnumerable<Square> possibleSquares = new List<Square>();
             Square currSquare = board.FindPiece(this);
 
-            for (int rosPosition = 0; rosPosition < 8; rosPosition++)
+            foreach (var direction in directions)
             {
-                if (rosPosition !=currSquare.Row)
+                int newRow = currSquare.Row;
+                int newCol = currSquare.Col;
+
+                while (true)
                 {
-                    rowDisplacement.Add(rosPosition-currSquare.Row);
+                    newRow += direction[0];
+                    newCol += direction[1];
+
+                    // Check if the new position is within the board limits
+                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
+                    {
+                        break;
+                    }
+
+                    ((List<Square>)possibleSquares).Add(Square.At(newRow, newCol));
                 }
             }
-
-            for (int colPosition = 0; colPosition < 8; colPosition++)
-            {
-                if (colPosition != currSquare.Col)
-                {
-                    colDisplacement.Add(colPosition-currSquare.Col);
-                }
-            }
-            
-            IEnumerable<Square> possibleSquares = new List<Square>();
-            
-            // for loop to generate possible moves based on row Displacements
-            for (int idx = 0; idx < rowDisplacement.Count; idx++)
-            {
-                ((List<Square>)possibleSquares).Add(Square.At(currSquare.Row + rowDisplacement[idx],
-                    currSquare.Col));
-            }
-            
-            // for loop to generate possible moves based on row Displacements
-            for (int idx = 0; idx < colDisplacement.Count; idx++)
-            {
-                ((List<Square>)possibleSquares).Add(Square.At(currSquare.Row,
-                    currSquare.Col + colDisplacement[idx]));
-            }
-
             return possibleSquares;
         }
     }
