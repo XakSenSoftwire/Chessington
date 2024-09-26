@@ -12,40 +12,54 @@ namespace Chessington.GameEngine.Pieces
 
         public override IEnumerable<Square> GetAvailableMoves(Board board)
         {
-            List<int> rowDisplacement = new List<int> {};
             // no need for colDisplacement as pawns cannot en-passant or takes
+            int[][] directions = new int[][]
+            {
+                new int[] { 0, 0},
+                new int[] { 0, 0}
+            };
             
             if (this.Player == Player.Black)
             {
-                // normal pawn movement logic
-                rowDisplacement.Add(1);
+                directions[0] = new int[] { 1, 0 };
                 
                 // special two-step logic
                 if (this.HasMoved == false)
                 {
-                    rowDisplacement.Add(2);
+                    directions[1] = new int[] { 2, 0 };
                 }
 
             }
             else
             {
-                rowDisplacement.Add(-1);
-
+                directions[0] = new int[] { -1, 0 };
+                
+                // special two-step logic
                 if (this.HasMoved == false)
                 {
-                    rowDisplacement.Add(-2);
+                    directions[1] = new int[] { -2, 0 };
                 }
+
             }
             
             Square currSquare = board.FindPiece(this);
             IEnumerable<Square> possibleSquares = new List<Square>();
     
             // for loop to generate possible moves based on row Displacements
-            for (int idx = 0; idx < rowDisplacement.Count; idx++)
+            foreach (var direction in directions)
             {
-                ((List<Square>)possibleSquares).Add(Square.At(currSquare.Row + rowDisplacement[idx], currSquare.Col));
+                int newRow = currSquare.Row + direction[0];
+                int newCol = currSquare.Col + direction[1];
+
+                // Check if the new position is within the board limits
+                if ((newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) || !(
+                        board.GetPiece(Square.At(newRow, newCol)) is null))
+                {
+                    break;
+                }
+
+                ((List<Square>)possibleSquares).Add(Square.At(newRow, newCol));
             }
-            
             return possibleSquares;
         }
     }
