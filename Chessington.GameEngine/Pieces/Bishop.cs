@@ -33,7 +33,8 @@ namespace Chessington.GameEngine.Pieces
                     newCol += direction[1];
 
                     // Check if the new position is within the board limits
-                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
+                    if ((newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) || !(
+                            board.GetPiece(Square.At(newRow, newCol)) is null))
                     {
                         break;
                     }
