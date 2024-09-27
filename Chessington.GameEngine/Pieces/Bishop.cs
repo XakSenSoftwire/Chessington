@@ -32,14 +32,23 @@ namespace Chessington.GameEngine.Pieces
                     newRow += direction[0];
                     newCol += direction[1];
 
-                    // Check if the new position is within the board limits
-                    if ((newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) || !(
-                            board.GetPiece(Square.At(newRow, newCol)) is null))
+                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
                     {
                         break;
                     }
-                    
-                    ((List<Square>)possibleSquares).Add(Square.At(newRow, newCol));
+                    if (board.GetPiece(Square.At(newRow, newCol)) is null)
+                    {
+                        ((List<Square>)possibleSquares).Add(Square.At(newRow, newCol));
+                    }
+                    else if (board.GetPiece(Square.At(newRow, newCol)).Player != board.CurrentPlayer)
+                    {
+                        ((List<Square>)possibleSquares).Add(Square.At(newRow, newCol));
+                        break;
+                    }
+                    else if (board.GetPiece(Square.At(newRow, newCol)).Player == board.CurrentPlayer)
+                    {
+                        break;
+                    }
                 }
             }
 
